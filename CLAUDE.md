@@ -148,7 +148,7 @@ Then walk the user through the rest:
 
 Treat "done" as a checkpoint that requires the user's sign-off, not a unilateral declaration.
 
-## 17. Read enough context before editing
+## 17. Edit discipline: read context, match style, stay in scope
 
 Before changing code, understand:
 - **Callers** — who invokes this function / route / component, and what they expect
