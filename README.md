@@ -39,8 +39,8 @@ The principles are tool-agnostic. They've been written for Claude Code but work 
 ## The 21 rules at a glance
 
 1. Requirements clarity before development
-2. UI/UX gets an HTML mockup before code
-3. Page behavior simulated in HTML before code
+2. UI/UX gets an HTML preview before code
+3. Stay in scope — don't refactor code outside the request
 4. Accessibility surfaced alongside UI work
 5. Security is non-negotiable
 6. Scalability tradeoffs across horizons

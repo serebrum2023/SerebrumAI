@@ -9,6 +9,10 @@ These rules apply across all projects. The unifying idea: **surface tradeoffs, d
 
 **Establish the maturity level first.** At the start of any significant work block, ask the user whether the work is **MVP / prototype** or **production-grade**. Rules **6, 12, and 14** (scalability tradeoffs, formal migrations, rollout strategy) apply rigorously to production-grade work and may be relaxed for MVP / prototype work. Confirm the call with the user — do not assume.
 
+What counts as **significant / production-grade**: database schema changes, API contracts, authentication or authorization flows, data migrations, payment or billing logic, shared infrastructure, anything user-facing in a live product.
+
+What is usually **trivial / MVP**: UI tweaks, copy edits, prototypes and experiments, internal tools, throwaway scripts, one-off analyses.
+
 ---
 
 ## 1. Requirements clarity before development
@@ -18,17 +22,24 @@ If requirements are unclear, do **NOT** jump into code. Walk the user through el
 - Ambiguity at the start compounds into rework. Cheap to ask, expensive to undo.
 - "I'll figure it out as I go" is a red flag — stop and clarify instead.
 
-## 2. UI/UX gets an HTML mockup before code
+## 2. UI/UX gets an HTML preview before code
 
 **Applies to non-trivial UI work** — new pages, new flows, multi-component changes, or significant redesigns. **Skip for trivial tweaks** like color changes, copy edits, or small spacing / alignment adjustments.
 
-For qualifying UI/UX work, produce a static HTML mockup showing colors, layout, spacing, typography, and key visual states. User approves the visual direction **before** any production code is written.
+For qualifying UI/UX work, build an HTML preview before writing production code, in two stages:
 
-## 3. Page behavior simulated in HTML before code
+- **Visual mockup** — colors, layout, spacing, typography, and key visual states. User approves the visual direction first.
+- **Behavior simulation** — clicks, state changes, transitions, empty / loading / error states, edge cases. Prove the interaction model works before wiring it into the real app.
 
-**Applies to non-trivial UI work** (same threshold as Rule 2) — new pages, significant page rewrites, or pages with complex interaction models. **Skip for trivial tweaks.**
+For simple pages, the visual mockup is often enough; pages with non-trivial interaction warrant both stages.
 
-For qualifying work, go beyond a static mockup: build an **interactive HTML preview** that simulates the page's behavior — clicks, state changes, transitions, empty/loading/error states, edge cases. Prove the interaction model works *before* wiring it into the real app.
+## 3. Stay in scope — don't refactor code outside the request
+
+Do **only** what was asked. Resist the urge to "clean up" or restructure nearby code that wasn't part of the request, even if it looks improvable.
+
+- Unrequested refactoring inflates diffs, hides the actual change, and risks breaking things outside the user's mental model of what changed.
+- If you spot something genuinely worth fixing, **surface it as a follow-up suggestion** — don't fold it into the current diff.
+- Acceptable exception: small, *strictly necessary* edits to make the requested change work (e.g., updating a caller's signature when changing a function's parameters). When in doubt, ask first.
 
 ## 4. Accessibility surfaced alongside UI work
 
@@ -123,9 +134,14 @@ When a file, function, component, or module is growing beyond a reasonable scope
 
 ## 16. Self-review before declaring done
 
-Before saying a feature is complete, walk the user through:
+Before saying a feature is complete, **lead with risk** — call it out explicitly, not as one bullet among many:
+
+> **Risk:** what's most likely to break, where bugs could hide, what wasn't fully exercised, what assumptions are unproven.
+
+If risk is non-trivial, name it clearly and recommend mitigation. Do not bury risk inside a feature checklist.
+
+Then walk the user through the rest:
 - **What changed** — the substantive edits, not just file names
-- **What's risky** — the parts most likely to have bugs or unintended effects
 - **What was deferred** — TODOs, follow-ups, known gaps
 - **What to test manually** — paths automated tests don't cover
 
@@ -139,6 +155,8 @@ Before changing code, understand:
 - **Surrounding patterns** — how the rest of the codebase solves similar problems
 
 The failure mode is a "surgical" edit that quietly breaks three other places because the surrounding context wasn't checked. Surface a one-line *"here's what I checked"* note so the user knows the change isn't blind.
+
+**Match the existing code style.** Study the conventions already in use — naming, formatting, state management, error handling, file structure — and follow them. Do not introduce new architectural styles, naming conventions, or abstractions without explaining why deviation is justified.
 
 ## 18. Honest reporting — don't claim what wasn't verified
 
