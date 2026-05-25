@@ -22,24 +22,25 @@ If requirements are unclear, do **NOT** jump into code. Walk the user through el
 - Ambiguity at the start compounds into rework. Cheap to ask, expensive to undo.
 - "I'll figure it out as I go" is a red flag — stop and clarify instead.
 
-## 2. UI/UX gets an HTML preview before code
+## 2. UI/UX gets an HTML mockup before code
 
 **Applies to non-trivial UI work** — new pages, new flows, multi-component changes, or significant redesigns. **Skip for trivial tweaks** like color changes, copy edits, or small spacing / alignment adjustments.
 
-For qualifying UI/UX work, build an HTML preview before writing production code, in two stages:
+For qualifying UI/UX work, produce a static HTML mockup showing colors, layout, spacing, typography, and key visual states. User approves the visual direction **before** any production code is written.
 
-- **Visual mockup** — colors, layout, spacing, typography, and key visual states. User approves the visual direction first.
-- **Behavior simulation** — clicks, state changes, transitions, empty / loading / error states, edge cases. Prove the interaction model works before wiring it into the real app.
+## 3. Logic clickthrough before full implementation
 
-For simple pages, the visual mockup is often enough; pages with non-trivial interaction warrant both stages.
+For features with **non-trivial business logic, workflows, or multi-step processes**, build a clickthrough HTML prototype that simulates the logic end-to-end *before* implementing it in production code.
 
-## 3. Stay in scope — don't refactor code outside the request
+The goal is **not** UI polish — it's logic validation. Walk the user through:
+- Decisions and branches
+- Inputs taken and outputs produced
+- State transitions and edge cases
+- Error / recovery paths
 
-Do **only** what was asked. Resist the urge to "clean up" or restructure nearby code that wasn't part of the request, even if it looks improvable.
+Let the user confirm *"yes, this is the logic I want"* on disposable HTML before sinking time into real code. Catching logic flaws on paper is orders of magnitude cheaper than catching them in production.
 
-- Unrequested refactoring inflates diffs, hides the actual change, and risks breaking things outside the user's mental model of what changed.
-- If you spot something genuinely worth fixing, **surface it as a follow-up suggestion** — don't fold it into the current diff.
-- Acceptable exception: small, *strictly necessary* edits to make the requested change work (e.g., updating a caller's signature when changing a function's parameters). When in doubt, ask first.
+This applies even to features with minimal UI — anything where the workflow itself needs validation (approval flows, branching journeys, calculations, routing decisions, onboarding paths). **Skip for trivial features** where the logic is obvious.
 
 ## 4. Accessibility surfaced alongside UI work
 
@@ -157,6 +158,8 @@ Before changing code, understand:
 The failure mode is a "surgical" edit that quietly breaks three other places because the surrounding context wasn't checked. Surface a one-line *"here's what I checked"* note so the user knows the change isn't blind.
 
 **Match the existing code style.** Study the conventions already in use — naming, formatting, state management, error handling, file structure — and follow them. Do not introduce new architectural styles, naming conventions, or abstractions without explaining why deviation is justified.
+
+**Stay in scope — don't refactor code outside the request.** Do only what was asked. Resist the urge to "clean up" or restructure nearby code, even if it looks improvable. Unrequested refactoring inflates diffs, hides the actual change, and risks breaking things outside the user's mental model. If you spot something genuinely worth fixing, surface it as a follow-up suggestion — don't fold it into the current diff. Acceptable exception: small, *strictly necessary* edits to make the requested change work (e.g., updating a caller's signature when changing a function's parameters).
 
 ## 18. Honest reporting — don't claim what wasn't verified
 
